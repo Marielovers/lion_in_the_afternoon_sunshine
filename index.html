@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>햇살 속의 리온</title>
     <style>
         @font-face {
@@ -59,7 +59,7 @@
 
         .warning-title {
             color: #ff3333;
-            font-size: 3rem;
+            font-size: clamp(2rem, 8vw, 3rem);
             margin-bottom: 20px;
             text-shadow: 2px 2px 5px rgba(255, 0, 0, 0.5);
             animation: flicker 2s infinite;
@@ -71,19 +71,22 @@
         }
 
         .warning-text {
-            font-size: 1.5rem;
-            margin-bottom: 50px;
+            font-size: clamp(1.2rem, 5vw, 1.5rem);
+            margin-bottom: 40px;
             line-height: 1.6;
+            word-break: keep-all;
         }
 
         .btn-group {
             display: flex;
-            gap: 30px;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
         }
 
         .warning-btn {
-            padding: 18px 60px;
-            font-size: 2rem;
+            padding: clamp(12px, 4vw, 18px) clamp(30px, 8vw, 60px);
+            font-size: clamp(1.5rem, 6vw, 2rem);
             cursor: pointer;
             border: none;
             border-radius: 12px;
@@ -91,6 +94,7 @@
             outline: none;
             transition: all 0.2s ease-in-out; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            flex: 0 1 auto;
         }
 
         #btn-yes {
@@ -98,7 +102,7 @@
             color: white;
         }
 
-        #btn-yes:hover {
+        #btn-yes:hover, #btn-yes:focus {
             background-color: #66bb6a;
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 6px 15px rgba(76, 175, 80, 0.6);
@@ -114,7 +118,7 @@
             color: white;
         }
 
-        #btn-no:hover {
+        #btn-no:hover, #btn-no:focus {
             background-color: #ef5350;
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 6px 15px rgba(244, 67, 54, 0.6);
@@ -132,27 +136,31 @@
             justify-content: center;
             width: 100%;
             height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         #secret-message {
             display: none;
             margin-bottom: 20px;
-            font-size: 2.5rem;
+            font-size: clamp(1.5rem, 6vw, 2.5rem);
             color: #000000;
             text-align: center;
             width: 100%;
-            white-space: nowrap;
+            word-break: keep-all;
         }
 
         #spin-gif {
-            max-width: 80vw;
-            max-height: 60vh;
+            max-width: 90vw;
+            max-height: 50vh;
+            object-fit: contain;
         }
 
         #counter {
             margin-top: 30px;
-            font-size: 2.5rem;
+            font-size: clamp(1.5rem, 6vw, 2.5rem);
             text-align: center;
+            word-break: keep-all;
         }
     </style>
 </head>
@@ -197,7 +205,7 @@
             warningScreen.style.display = 'none';
             mainContent.style.display = 'flex';
             
-            bgm.play();
+            bgm.play().catch(() => {});
 
             setInterval(() => {
                 spins++;
