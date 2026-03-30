@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>햇살 속의 리온</title>
+    <style>
+        @font-face {
+            font-family: 'ONE-Mobile-POP';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/ONE-Mobile-POP.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            color: #000000;
+            font-family: 'ONE-Mobile-POP', 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        #warning-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); 
+            color: #ffffff;
+            z-index: 20;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        #warning-screen::before {
+            content: '';
+            position: absolute;
+            top: -20px; 
+            left: -20px; 
+            right: -20px; 
+            bottom: -20px;
+            background-image: url('trap.webp');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.4;
+            filter: blur(8px);
+            z-index: -1;
+        }
+
+        .warning-title {
+            color: #ff3333;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(255, 0, 0, 0.5);
+            animation: flicker 2s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .warning-text {
+            font-size: 1.5rem;
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 30px;
+        }
+
+        .warning-btn {
+            padding: 18px 60px;
+            font-size: 2rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 12px;
+            font-family: 'ONE-Mobile-POP', sans-serif;
+            outline: none;
+            transition: all 0.2s ease-in-out; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        #btn-yes {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #btn-yes:hover {
+            background-color: #66bb6a;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.6);
+        }
+
+        #btn-yes:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        #btn-no {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #btn-no:hover {
+            background-color: #ef5350;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 15px rgba(244, 67, 54, 0.6);
+        }
+
+        #btn-no:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        #main-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        #secret-message {
+            display: none;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #000000;
+            text-align: center;
+            width: 100%;
+            white-space: nowrap;
+        }
+
+        #spin-gif {
+            max-width: 80vw;
+            max-height: 60vh;
+        }
+
+        #counter {
+            margin-top: 30px;
+            font-size: 2.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="warning-screen">
+        <div class="warning-title">⚠️ WARNING ⚠️</div>
+        <div class="warning-text">
+            본 페이지는 성인용 콘텐츠를 포함하고 있습니다.<br>
+            당신은 18세 이상입니까?
+        </div>
+        <div class="btn-group">
+            <button class="warning-btn" id="btn-yes">네</button>
+            <button class="warning-btn" id="btn-no">아니오</button>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <div id="secret-message">You Are Officially Gyogu! :-)</div>
+        
+        <img id="spin-gif" src="shasha_spin.gif" alt="Spinning Cute Image">
+        
+        <div id="counter">
+            You have sat through <span id="spin-count">0</span> spins!
+        </div>
+        
+        <audio id="bgm" src="bgm.ogg" loop></audio>
+    </div>
+
+    <script>
+        const warningScreen = document.getElementById('warning-screen');
+        const mainContent = document.getElementById('main-content');
+        const bgm = document.getElementById('bgm');
+        const spinCountEl = document.getElementById('spin-count');
+        const secretMessage = document.getElementById('secret-message');
+        const btnYes = document.getElementById('btn-yes');
+        const btnNo = document.getElementById('btn-no');
+
+        let spins = 0;
+
+        function startSpin() {
+            warningScreen.style.display = 'none';
+            mainContent.style.display = 'flex';
+            
+            bgm.play();
+
+            setInterval(() => {
+                spins++;
+                spinCountEl.textContent = spins;
+
+                if (spins >= 46) {
+                    secretMessage.style.display = 'block';
+                }
+            }, 480); 
+        }
+
+        function exitPage() {
+            window.location.href = "https://trickcal.com/";
+        }
+
+        btnYes.addEventListener('click', startSpin);
+        btnNo.addEventListener('click', exitPage);
+    </script>
+</body>
+</html>
